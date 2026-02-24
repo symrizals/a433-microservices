@@ -1,16 +1,30 @@
+# Versi Docker Compose yang digunakan
 version: "2"
+
 services:
+  # Service untuk aplikasi Item App
   item-app:
+    # Menggunakan image item-app dari Docker Hub
     image: symrizals/item-app:v1
+    # Port mapping agar dapat diakses dari port 80 di host
     ports:
       - 80:8080
+    # Memastikan item-app hanya berjalan setelah item-db diluncurkan
     depends_on:
       - item-db
+    # Restart container otomatis jika terhenti
+    restart: always
 
+  # Service untuk database MongoDB
   item-db:
+    # Menggunakan image mongo versi 3 dari Docker Hub
     image: mongo:3
+    # Menggunakan volume app-db untuk penyimpanan data persisten
     volumes:
       - app-db:/data/db
+    # Restart container otomatis jika terhenti
+    restart: always
 
+# Mendefinisikan volume untuk penyimpanan data MongoDB
 volumes:
   app-db:
