@@ -23,18 +23,21 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        # Port aplikasi berjalan
+        - name: APP_PORT
+          value: "8080"
+        # Host MongoDB diambil dari ConfigMap
         - name: MONGO_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: mongo-config
-              key: mongo-url
+          value: mongo-service
+        # Username MongoDB diambil dari Secret
         - name: MONGO_USER
           valueFrom:
             secretKeyRef:
               name: mongo-secret
-              key: mongo-username
+              key: MONGO_ROOT_USERNAME
+        # Password MongoDB diambil dari Secret
         - name: MONGO_PASS
           valueFrom:
             secretKeyRef:
               name: mongo-secret
-              key: mongo-password
+              key: MONGO_ROOT_PASSWORD

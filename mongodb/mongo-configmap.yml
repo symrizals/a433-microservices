@@ -3,5 +3,6 @@ kind: ConfigMap
 metadata:
   name: mongo-config
 data:
-  mongo-url: mongo-service
-  mongo-db: karsajobs
+  mongo.conf: |
+    storage:
+      dbPath: /data/db

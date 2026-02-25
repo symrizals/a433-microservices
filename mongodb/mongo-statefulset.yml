@@ -25,20 +25,29 @@ spec:
         - containerPort: 27017
           name: mongo
         env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: mongo-username
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: mongo-password
+        # Username diambil dari file Secret
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+        # Password diambil dari file Secret
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
         volumeMounts:
+        # Mount Persistent Volume untuk data MongoDB
         - name: mongo-persistent-storage
           mountPath: /data/db
+        # Mount ConfigMap untuk konfigurasi MongoDB
+        - name: mongo-config
+          mountPath: /config
+        # Mount Secret untuk credentials MongoDB
+        - name: mongo-credentials
+          mountPath: /etc/mongo-credentials
       volumes:
       - name: mongo-persistent-storage
         persistentVolumeClaim:
           claimName: mongo-pv-claim
+      - name: mongo-config
+        configMap:
+          name: mongo-config
+      - name: mongo-credentials
+        secret:
+          secretName: mongo-secret
