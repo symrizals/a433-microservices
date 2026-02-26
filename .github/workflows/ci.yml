@@ -1,0 +1,59 @@
+name: CI Pipeline - Karsajobs Backend
+
+on:
+  push:
+    branches:
+      - karsajobs
+  pull_request:
+    branches:
+      - karsajobs
+
+jobs:
+  # Job 1: Lint Dockerfile menggunakan hadolint
+  lint-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install hadolint
+        run: |
+          wget -O hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x hadolint
+          sudo mv hadolint /usr/local/bin/
+
+      - name: Lint Dockerfile
+        run: hadolint Dockerfile
+
+  # Job 2: Jalankan unit test aplikasi Go
+  test-app:
+    runs-on: ubuntu-latest
+    needs: lint-dockerfile
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.15'
+
+      - name: Run unit tests
+        run: go test -v -short --count=1 $(go list ./...)
+
+  # Job 3: Build dan push image ke GitHub Container Registry
+  build-app-karsajobs:
+    runs-on: ubuntu-latest
+    needs: test-app
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login ke GitHub Container Registry
+        run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u symrizals --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/symrizals/karsajobs:latest .
+
+      - name: Push Docker image
+        run: docker push ghcr.io/symrizals/karsajobs:latest
