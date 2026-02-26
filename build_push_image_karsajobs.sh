@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Menyimpan password Docker Hub ke environment variable
-export PASSWORD_DOCKER_HUB=jr7fsPFcptcX3Me
+# Menyimpan GitHub Personal Access Token ke environment variable
+# untuk login ke GitHub Container Registry (ghcr.io)
+export CR_PAT=<token-kamu>
 
-# 1. Membuat Docker image dari Dockerfile dengan nama karsajobs
-docker build -t karsajobs:latest .
+# Membuat Docker image dari Dockerfile dengan tag latest
+# Format nama: ghcr.io/<username>/<nama-image>:tag
+docker build -t ghcr.io/symrizals/karsajobs:latest .
 
-# 2. Melihat daftar image di lokal
+# Menampilkan daftar image yang tersedia di lokal
 docker images
 
-# 3. Mengubah nama image agar sesuai dengan format Docker Hub
-docker tag karsajobs:latest symrizals/karsajobs:latest
+# Login ke GitHub Container Registry menggunakan PAT
+# --password-stdin membaca token dari stdin untuk keamanan
+echo $CR_PAT | docker login ghcr.io -u symrizals --password-stdin
 
-# 4. Login ke Docker Hub menggunakan environment variable
-echo $PASSWORD_DOCKER_HUB | docker login -u symrizals --password-stdin
-
-# 5. Mengunggah image ke Docker Hub
-docker push symrizals/karsajobs:latest
+# Mengunggah image ke GitHub Container Registry
+docker push ghcr.io/symrizals/karsajobs:latest
