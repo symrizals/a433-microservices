@@ -1,14 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
+  # Nama Service untuk frontend karsajobs-ui
   name: karsajobs-ui-service
   labels:
     app: karsajobs-ui
 spec:
+  # NodePort memungkinkan akses dari luar cluster
   type: NodePort
   ports:
+    # Port yang diekspos oleh Service
   - port: 80
+    # Port pada container yang dituju (Vue.js serve port)
     targetPort: 8000
   selector:
+    # Service menargetkan Pod dengan label ini
     app: karsajobs-ui
     tier: frontend

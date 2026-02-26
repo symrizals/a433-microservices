@@ -1,11 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Nama Deployment untuk frontend karsajobs-ui
   name: karsajobs-ui
   labels:
     app: karsajobs-ui
     tier: frontend
 spec:
+  # Jumlah replica Pod yang dijalankan
   replicas: 1
   selector:
     matchLabels:
@@ -19,9 +21,12 @@ spec:
     spec:
       containers:
       - name: karsajobs-ui
-        image: symrizals/karsajobs-ui:latest
+        # Image yang digunakan dari Docker Hub
+        image: ghcr.io/symrizals/karsajobs-ui:latest
         ports:
         - containerPort: 8000
         env:
-        - name: VUE_APP_API_URL
-          value: http://karsajobs-service:8080
+        # URL backend API yang diakses oleh frontend
+        # Menggunakan IP VM dan NodePort backend
+        - name: VUE_APP_BACKEND
+          value: http://192.168.64.10:8889

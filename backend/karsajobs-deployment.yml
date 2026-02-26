@@ -1,11 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Nama Deployment untuk backend karsajobs
   name: karsajobs
   labels:
     app: karsajobs
     tier: backend
 spec:
+  # Jumlah replica Pod yang dijalankan
   replicas: 1
   selector:
     matchLabels:
@@ -19,14 +21,15 @@ spec:
     spec:
       containers:
       - name: karsajobs
-        image: symrizals/karsajobs:latest
+        # Image yang digunakan dari Docker Hub
+        image: ghcr.io/symrizals/karsajobs:latest
         ports:
         - containerPort: 8080
         env:
-        # Port aplikasi berjalan
+        # Port aplikasi backend berjalan
         - name: APP_PORT
           value: "8080"
-        # Host MongoDB diambil dari ConfigMap
+        # Host MongoDB menggunakan nama Headless Service
         - name: MONGO_HOST
           value: mongo-service
         # Username MongoDB diambil dari Secret

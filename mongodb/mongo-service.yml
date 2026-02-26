@@ -1,13 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
+  # Nama Service yang digunakan sebagai DNS name untuk koneksi MongoDB
   name: mongo-service
   labels:
     app: mongo
 spec:
   ports:
+    # Port standar MongoDB
     - port: 27017
   selector:
+    # Service akan menargetkan Pod dengan label ini
     app: mongo
     tier: backend
+  # ClusterIP None membuat Headless Service
+  # Pod lain terhubung langsung ke Pod MongoDB via DNS
   clusterIP: None

@@ -1,14 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
+  # Nama Service untuk backend karsajobs
   name: karsajobs-service
   labels:
     app: karsajobs
 spec:
+  # NodePort memungkinkan akses dari luar cluster
   type: NodePort
   ports:
+    # Port yang diekspos oleh Service
   - port: 8080
+    # Port pada container yang dituju
     targetPort: 8080
   selector:
+    # Service menargetkan Pod dengan label ini
     app: karsajobs
     tier: backend

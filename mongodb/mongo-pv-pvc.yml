@@ -1,28 +1,36 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  # Nama Persistent Volume untuk MongoDB
   name: mongo-pv
   labels:
     type: local
 spec:
+  # Storage class manual berarti kita provisioning secara statis
   storageClassName: manual
   capacity:
+    # Kapasitas penyimpanan yang dialokasikan
     storage: 1Gi
+  # ReadWriteOnce: hanya bisa di-mount oleh satu Node
   accessModes:
     - ReadWriteOnce
+  # Path di Node tempat data disimpan
   hostPath:
     path: "/mnt/data/mongo"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  # Nama PVC yang akan direferensikan oleh StatefulSet
   name: mongo-pv-claim
   labels:
     app: mongo
 spec:
+  # Harus sama dengan storageClassName pada PersistentVolume
   storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
+      # Kapasitas yang diminta harus <= kapasitas PersistentVolume
       storage: 1Gi

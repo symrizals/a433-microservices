@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  # Nama ConfigMap yang akan direferensikan oleh StatefulSet
   name: mongo-config
 data:
+  # Konfigurasi MongoDB dalam format file mongo.conf
   mongo.conf: |
     storage:
+      # Path penyimpanan data MongoDB di dalam container
       dbPath: /data/db

@@ -1,15 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  # Nama StatefulSet untuk MongoDB
   name: mongo
   labels:
     app: mongo
 spec:
   selector:
     matchLabels:
+      # Selector harus sama dengan label Pod di template
       app: mongo
       tier: backend
+  # Mereferensikan Headless Service yang sudah dibuat
   serviceName: mongo-service
+  # Jumlah replica MongoDB yang dijalankan
   replicas: 1
   template:
     metadata:
@@ -17,6 +21,7 @@ spec:
         app: mongo
         tier: backend
     spec:
+      # Waktu tunggu sebelum Pod dihentikan paksa (detik)
       terminationGracePeriodSeconds: 10
       containers:
       - name: mongo
@@ -25,14 +30,14 @@ spec:
         - containerPort: 27017
           name: mongo
         env:
-        # Username diambil dari file Secret
+        # Username diambil dari file Secret yang di-mount
         - name: MONGO_INITDB_ROOT_USERNAME_FILE
           value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
-        # Password diambil dari file Secret
+        # Password diambil dari file Secret yang di-mount
         - name: MONGO_INITDB_ROOT_PASSWORD_FILE
           value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
         volumeMounts:
-        # Mount Persistent Volume untuk data MongoDB
+        # Mount Persistent Volume untuk menyimpan data MongoDB
         - name: mongo-persistent-storage
           mountPath: /data/db
         # Mount ConfigMap untuk konfigurasi MongoDB
@@ -42,12 +47,15 @@ spec:
         - name: mongo-credentials
           mountPath: /etc/mongo-credentials
       volumes:
+      # Volume dari PersistentVolumeClaim untuk data persisten
       - name: mongo-persistent-storage
         persistentVolumeClaim:
           claimName: mongo-pv-claim
+      # Volume dari ConfigMap untuk konfigurasi
       - name: mongo-config
         configMap:
           name: mongo-config
+      # Volume dari Secret untuk credentials
       - name: mongo-credentials
         secret:
           secretName: mongo-secret
