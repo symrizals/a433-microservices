@@ -1,0 +1,7 @@
+Docker Hub:
+- https://hub.docker.com/r/symrizals/order-service
+- https://hub.docker.com/r/symrizals/shipping-service
+
+GitHub Packages (ghcr.io):
+- https://ghcr.io/symrizals/order-service
+- https://ghcr.io/symrizals/shipping-service

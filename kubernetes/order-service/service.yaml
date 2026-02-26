@@ -1,0 +1,13 @@
+# Service untuk expose Order Service ke luar cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  type: NodePort     # Accessible dari luar cluster via minikube
+  selector:
+    app: order-service
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30000  # Port akses dari host

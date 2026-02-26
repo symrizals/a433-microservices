@@ -1,0 +1,29 @@
+# Deployment untuk Order Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+      - name: order-service
+        # Image dari Docker Hub
+        image: symrizals/order-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        # URL RabbitMQ menggunakan nama Service Kubernetes (DNS internal)
+        - name: AMQP_URL
+          value: "amqp://guest:guest@rabbitmq:5672"
